@@ -1,8 +1,31 @@
 function h = post_processing(image,results)
 h = struct;
+results = correlation_check(results);
 h = plot_pts(image,results,h);
 h = plot_offset(image,results,h);
 h = plot_disp(image,results,h);
+
+end
+
+%% correlation failures
+function results = correlation_check(results)
+fail_cnt = 0;
+fail_pts = 0;
+for pt = 1:length(results.pts.x)
+    if mean(results.cc(:,pt)) < 0.5
+       fprintf('%d ',N)
+       fail_cnt = fail_cnt + 1;
+       fail_pts(fail_cnt) = pt;
+    end
+end
+       
+results.pts.x(fail_pts) = [];
+results.pts.z(fail_pts) = [];
+results.pts_scaled.x(fail_pts) = [];
+results.pts_scaled.z(fail_pts) = [];
+results.cc(:,fail_pts) = [];
+results.offset.x(:,fail_pts) = [];
+results.offset.z(:,fail_pts) = [];
 
 end
 

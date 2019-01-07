@@ -121,18 +121,15 @@ function [image,results] = image_corr(image,results)
     ref_img = interpolate_image(ref_img,results.interp_step.x,results.interp_step.z);
     fprintf('\npoint %d\n',point)
     
-    %figure %NEW
     for temp = 1:(length(image.data)-1)
       temp_img = imcrop(image.data{temp+1},temp_crop);
       temp_img = interpolate_image(temp_img,results.interp_step.x,results.interp_step.z);
       c = normxcorr2_general(temp_img,ref_img,numel(temp_img));
-      results.cc(temp,point) = max(c(:)); %NEW
-      %surf(c); %NEW
+      results.cc(temp,point) = max(c(:));
       [zpeak, xpeak] = find(c==max(c(:)));   % IMPORTANT THAT ORDER IS [Zp,Xp]
-      results.offset.x(temp,point) = (xpeak-size(temp_img,2))*results.pix2um.x; %FLAG
-      results.offset.z(temp,point) = (zpeak-size(temp_img,1))*results.pix2um.z; %FLAG
-      fprintf('image %2d\tcc %.2f\n',temp,max(c(:))) %NEW
-      %pause %NEW
+      results.offset.x(temp,point) = (xpeak-size(temp_img,2))*results.pix2um.x; %double check this
+      results.offset.z(temp,point) = (zpeak-size(temp_img,1))*results.pix2um.z; %double check this
+      fprintf('image %2d\tcc %.2f\n',temp,max(c(:)))
     end   
   end
   
